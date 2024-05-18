@@ -1,5 +1,6 @@
 import {
   Clear,
+  Javascript,
   Logout,
   Person2Outlined,
   PersonAdd,
@@ -25,7 +26,11 @@ import {
   styled,
 } from "@mui/material";
 import React, { Fragment, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+import SummaryApi from "../../common";
+import toast from "react-hot-toast";
+import { setUserDetails } from "../../store/userSlice";
 
 //Card style
 const StyledBadge = styled(Badge)(({ theme }) => ({
@@ -54,7 +59,7 @@ const SearchInput = styled(InputBase)(({ theme }) => ({
   position: "absolute",
   right: 0,
   opacity: 0,
-  transition: "0.5s all",
+  transition: "0.3s all",
   padding: "0 45px 0 15px",
 }));
 
@@ -74,6 +79,29 @@ const Header2 = () => {
   const handleClose = () => {
     setAnchorEl(null);
   };
+
+  const user = useSelector((state) => state?.user?.user);
+  const dispatch = useDispatch();
+  console.log("userProfile", user);
+
+  const handleLogout = async () => {
+    const fetchData = await fetch(SummaryApi.logout_user.url, {
+      method: SummaryApi.logout_user.method,
+      credentials: "include",
+    });
+
+    const data = await fetchData.json();
+
+    if (data.success) {
+      toast.success(data.message);
+      dispatch(setUserDetails(null));
+    }
+
+    if (data.error) {
+      toast.error(data.message);
+    }
+  };
+
   return (
     <Box sx={{ py: 2.5, boxShadow: "0 0 16px rgba(0, 0, 0, 0.15)" }}>
       <Container sx={{ display: "flex", justifyContent: "space-between" }}>
@@ -120,108 +148,132 @@ const Header2 = () => {
           </SearchBar>
 
           <Stack direction={"row"} alignItems={"center"}>
-            <Link to={"/login"}>
-              <Typography
-                sx={{
-                  // backgroundColor: "pink",
-                  px: 1,
-                  borderRadius: "10px",
-                  position: "relative",
-                  "&::after": {
-                    content: '""',
-                    position: "absolute",
-                    left: 0,
-                    bottom: 0,
-                    width: 0,
-                    borderBottom: "2px solid black",
-                    transition: "0.3s all",
-                  },
-                  "&:hover::after": {
-                    width: "100%",
-                  },
-                }}
-              >
-                Login
-              </Typography>
-            </Link>
-            {/* <Fragment>
-              <Box>
-                <Tooltip title="Account settings">
-                  <IconButton
-                    onClick={handleClick}
-                    size="small"
-                    sx={{ ml: 2 }}
-                    aria-controls={open ? "account-menu" : undefined}
-                    aria-haspopup="true"
-                    aria-expanded={open ? "true" : undefined}
+            {user?._id ? (
+              <Fragment>
+                <Box>
+                  <Tooltip title="Account settings">
+                    <IconButton
+                      onClick={handleClick}
+                      size="small"
+                      aria-controls={open ? "account-menu" : undefined}
+                      aria-haspopup="true"
+                      aria-expanded={open ? "true" : undefined}
+                    >
+                      <Avatar
+                        sx={{ width: 32, height: 32 }}
+                        src={user?.profilePic || null}
+                        alt={user?.name}
+                      />
+                      {/* {user?.profilePic ? (<img src={user?.profilePic} />) : null} */}
+                    </IconButton>
+                  </Tooltip>
+                </Box>
+                <Menu
+                  anchorEl={anchorEl}
+                  id="account-menu"
+                  open={open}
+                  onClose={handleClose}
+                  onClick={handleClose}
+                  PaperProps={{
+                    elevation: 0,
+                    sx: {
+                      overflow: "visible",
+                      filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
+                      mt: 1.5,
+                      "& .MuiAvatar-root": {
+                        width: 32,
+                        height: 32,
+                        ml: -0.5,
+                        mr: 1,
+                      },
+                      "&::before": {
+                        content: '""',
+                        display: "block",
+                        position: "absolute",
+                        top: 0,
+                        right: 14,
+                        width: 10,
+                        height: 10,
+                        bgcolor: "background.paper",
+                        transform: "translateY(-50%) rotate(45deg)",
+                        zIndex: 0,
+                      },
+                    },
+                  }}
+                  transformOrigin={{ horizontal: "right", vertical: "top" }}
+                  anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
+                >
+                  <MenuItem onClick={handleClose}>
+                    <Avatar
+                      sx={{ width: 32, height: 32 }}
+                      src={user?.profilePic || null}
+                      alt={user?.name}
+                    />
+                    {user?.firstName + " " + user?.lastName}
+                  </MenuItem>
+                  <Link to={"admin-panel"}>
+                    <MenuItem onClick={handleClose}>
+                      <Avatar
+                        sx={{ width: 32, height: 32 }}
+                        src={user?.profilePic || null}
+                        alt={user?.name}
+                      />
+                      Administrator
+                    </MenuItem>
+                  </Link>
+                  <Divider />
+                  <MenuItem onClick={handleClose}>
+                    <ListItemIcon>
+                      <PersonAdd fontSize="small" />
+                    </ListItemIcon>
+                    Add another account
+                  </MenuItem>
+                  <MenuItem onClick={handleClose}>
+                    <ListItemIcon>
+                      <Settings fontSize="small" />
+                    </ListItemIcon>
+                    Settings
+                  </MenuItem>
+                  <MenuItem
+                    onClick={(e) => {
+                      handleClose(e);
+                      handleLogout(e);
+                    }}
                   >
-                    <Avatar sx={{ width: 32, height: 32 }}>M</Avatar>
-                  </IconButton>
-                </Tooltip>
-              </Box>
-              <Menu
-                anchorEl={anchorEl}
-                id="account-menu"
-                open={open}
-                onClose={handleClose}
-                onClick={handleClose}
-                PaperProps={{
-                  elevation: 0,
-                  sx: {
-                    overflow: "visible",
-                    filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
-                    mt: 1.5,
-                    "& .MuiAvatar-root": {
-                      width: 32,
-                      height: 32,
-                      ml: -0.5,
-                      mr: 1,
-                    },
-                    "&::before": {
+                    <ListItemIcon>
+                      <Logout fontSize="small" />
+                    </ListItemIcon>
+                    Logout
+                  </MenuItem>
+                </Menu>
+              </Fragment>
+            ) : (
+              <Link to={"/login"}>
+                <Typography
+                  sx={{
+                    // backgroundColor: "pink",
+                    px: 1,
+                    borderRadius: "10px",
+                    position: "relative",
+                    "&::after": {
                       content: '""',
-                      display: "block",
                       position: "absolute",
-                      top: 0,
-                      right: 14,
-                      width: 10,
-                      height: 10,
-                      bgcolor: "background.paper",
-                      transform: "translateY(-50%) rotate(45deg)",
-                      zIndex: 0,
+                      left: 0,
+                      bottom: 0,
+                      width: 0,
+                      borderBottom: "2px solid black",
+                      transition: "0.3s all",
                     },
-                  },
-                }}
-                transformOrigin={{ horizontal: "right", vertical: "top" }}
-                anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
-              >
-                <MenuItem onClick={handleClose}>
-                  <Avatar /> Profile
-                </MenuItem>
-                <MenuItem onClick={handleClose}>
-                  <Avatar /> My account
-                </MenuItem>
-                <Divider />
-                <MenuItem onClick={handleClose}>
-                  <ListItemIcon>
-                    <PersonAdd fontSize="small" />
-                  </ListItemIcon>
-                  Add another account
-                </MenuItem>
-                <MenuItem onClick={handleClose}>
-                  <ListItemIcon>
-                    <Settings fontSize="small" />
-                  </ListItemIcon>
-                  Settings
-                </MenuItem>
-                <MenuItem onClick={handleClose}>
-                  <ListItemIcon>
-                    <Logout fontSize="small" />
-                  </ListItemIcon>
-                  Logout
-                </MenuItem>
-              </Menu>
-              <Person2Outlined />
-            </Fragment> */}
+                    "&:hover::after": {
+                      width: "100%",
+                    },
+                  }}
+                >
+                  Login
+                </Typography>
+              </Link>
+            )}
+
             <IconButton aria-label="cart">
               <StyledBadge badgeContent={4} color="primary">
                 <ShoppingCart />

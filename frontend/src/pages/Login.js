@@ -1,6 +1,5 @@
 import React from "react";
-import { Link as RouterLink } from "react-router-dom";
-
+import { Link as RouterLink, useNavigate } from "react-router-dom";
 import {
   Avatar,
   Box,
@@ -22,6 +21,9 @@ import {
   createTheme,
 } from "@mui/material";
 import { LockOutlined, Visibility, VisibilityOff } from "@mui/icons-material";
+import SummaryApi from "../common";
+import toast from "react-hot-toast";
+import Context from "../context";
 
 const defaultTheme = createTheme();
 
@@ -31,6 +33,8 @@ const Login = () => {
     email: "",
     password: "",
   });
+  const navigate = useNavigate();
+  const { fetchUserDetails } = React.useContext(Context);
 
   const handleOnChange = (e) => {
     const { name, value } = e.target;
@@ -43,8 +47,29 @@ const Login = () => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+
+    const dataResponse = await fetch(SummaryApi.signIn.url, {
+      method: SummaryApi.signIn.method,
+      credentials: "include",
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+
+    const dataAPI = await dataResponse.json();
+
+    if (dataAPI.success) {
+      toast.success(dataAPI.message);
+      navigate("/");
+      fetchUserDetails();
+    }
+
+    if (dataAPI.error) {
+      toast.error(dataAPI.message);
+    }
   };
 
   console.log("data", data);
