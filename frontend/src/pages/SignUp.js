@@ -1,5 +1,5 @@
 import React from "react";
-import { Link as RouterLink } from "react-router-dom";
+import { Link as RouterLink, useNavigate } from "react-router-dom";
 import {
   Avatar,
   Box,
@@ -13,26 +13,22 @@ import {
   IconButton,
   InputAdornment,
   InputLabel,
+  Link,
   OutlinedInput,
   TextField,
   ThemeProvider,
   Typography,
   createTheme,
 } from "@mui/material";
-import {
-  LockOutlined,
-  Person,
-  Visibility,
-  VisibilityOff,
-} from "@mui/icons-material";
-import { Link } from "react-router-dom";
+import { Person, Visibility, VisibilityOff } from "@mui/icons-material";
 import imageTobase64 from "../helpers/imageTobase64";
 import SummaryApi from "../common";
+import toast from "react-hot-toast";
 
 const defaultTheme = createTheme();
 
 const SignUp = () => {
-  //Form
+  //Form Processing
   const [data, setData] = React.useState({
     firstName: "",
     lastName: "",
@@ -41,6 +37,7 @@ const SignUp = () => {
     confirmPassword: "",
     profilePic: "",
   });
+  const navigate = useNavigate();
 
   const handleOnChange = (e) => {
     const { name, value } = e.target;
@@ -67,14 +64,13 @@ const SignUp = () => {
     });
   };
 
+  //Sign Up Account
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (data.password == data.confirmPassword) {
-      // const dataResponse = await fetch(SummaryApi.signUp.url, {
-      //   method: SummaryApi.signUp.method,
-      const dataResponse = await fetch("http://localhost:8080/api/signup", {
-        method: "post",
+    if (data.password === data.confirmPassword) {
+      const dataResponse = await fetch(SummaryApi.signUp.url, {
+        method: SummaryApi.signUp.method,
         headers: {
           "content-type": "application/json",
         },
@@ -83,13 +79,19 @@ const SignUp = () => {
 
       const dataAPI = await dataResponse.json();
 
-      console.log("data", dataAPI);
+      if (dataAPI.success) {
+        toast.success(dataAPI.message);
+        navigate("/login");
+      }
+
+      if (dataAPI.error) {
+        toast.error(dataAPI.message);
+      }
     } else {
-      console.log("Please check");
+      console.log("Please check password and confirm password");
+      toast.error("Please check password and confirm password");
     }
   };
-
-  console.log("data", data);
 
   //Hide/Show Password
   const [showPassword, setShowPassword] = React.useState(false);
