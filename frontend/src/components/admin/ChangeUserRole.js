@@ -24,6 +24,7 @@ const ChangeUserRole = ({
   email,
   role,
   onClose,
+  callFunc,
 }) => {
   const [userRole, setUserRole] = useState(role);
   const handleOnChangeSelect = (event) => {
@@ -50,6 +51,7 @@ const ChangeUserRole = ({
     if (responseData.success) {
       toast.success(responseData.message);
       onClose();
+      callFunc();
     }
     console.log("role update", responseData);
   };

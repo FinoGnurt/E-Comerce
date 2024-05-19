@@ -31,6 +31,7 @@ import { Link } from "react-router-dom";
 import SummaryApi from "../../common";
 import toast from "react-hot-toast";
 import { setUserDetails } from "../../store/userSlice";
+import ROLE from "../../common/role";
 
 //Card style
 const StyledBadge = styled(Badge)(({ theme }) => ({
@@ -228,16 +229,19 @@ const Header2 = () => {
                     />
                     {user?.firstName + " " + user?.lastName}
                   </MenuItem>
-                  <Link to={"admin-panel"}>
-                    <MenuItem onClick={handleClose}>
-                      <Avatar
-                        sx={{ width: 32, height: 32 }}
-                        src={user?.profilePic || null}
-                        alt={user?.name}
-                      />
-                      Administrator
-                    </MenuItem>
-                  </Link>
+                  {user?.role === ROLE.ADMIN && (
+                    <Link to={"/admin-panel/all-products"}>
+                      <MenuItem onClick={handleClose}>
+                        <Avatar
+                          sx={{ width: 32, height: 32 }}
+                          src={user?.profilePic || null}
+                          alt={user?.name}
+                        />
+                        {/* Administrator */}
+                        Admin Dashboard
+                      </MenuItem>
+                    </Link>
+                  )}
                   <Divider />
                   <MenuItem onClick={handleClose}>
                     <ListItemIcon>

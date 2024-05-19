@@ -79,6 +79,7 @@ const AllUsers = () => {
     firstName: "",
     lastName: "",
     role: "",
+    _id: "",
   });
 
   const fetchAllUsers = async () => {
@@ -143,7 +144,12 @@ const AllUsers = () => {
             aria-labelledby="tableTitle"
             size={dense ? "small" : "medium"}
           >
-            <TableHead>
+            <TableHead
+              sx={{
+                backgroundColor: "rgb(57 57 57)",
+                ".MuiTableCell-head": { color: "white" },
+              }}
+            >
               <TableRow>
                 <TableCell>Sr.</TableCell>
                 <TableCell>First Name</TableCell>
@@ -151,7 +157,7 @@ const AllUsers = () => {
                 <TableCell>Email</TableCell>
                 <TableCell>Role</TableCell>
                 <TableCell>Created Date</TableCell>
-                <TableCell>Action</TableCell>
+                <TableCell align="center">Action</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -163,11 +169,19 @@ const AllUsers = () => {
                   <TableCell>{user.email}</TableCell>
                   <TableCell>{user.role}</TableCell>
                   <TableCell>{moment(user.createdAt).format("llll")}</TableCell>
-                  <TableCell>
+                  <TableCell align="center">
                     <IconButton
                       onClick={() => {
                         handleOpen();
                         setUpdateUserDetails(user);
+                      }}
+                      sx={{
+                        backgroundColor: "#00000012",
+                        border: "0.5px solid #00000012",
+                        ":hover": {
+                          color: "green",
+                          border: "0.5px solid",
+                        },
                       }}
                     >
                       <EditIcon />
@@ -212,6 +226,8 @@ const AllUsers = () => {
             firstName={updateUserDetails.firstName}
             lastName={updateUserDetails.lastName}
             role={updateUserDetails.role}
+            userId={updateUserDetails._id}
+            callFunc={fetchAllUsers}
           />
         </Fade>
       </Modal>

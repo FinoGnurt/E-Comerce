@@ -34,6 +34,7 @@ import { Outlet, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import SummaryApi from "../common";
 import { setUserDetails } from "../store/userSlice";
+import ROLE from "../common/role";
 
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
@@ -153,8 +154,17 @@ const AdminPanel = () => {
     setMobileMoreAnchorEl(event.currentTarget);
   };
 
+  //Backend
+  const user = useSelector((state) => state?.user?.user);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
+  React.useEffect(() => {
+    if (user?.role !== ROLE.ADMIN) {
+      navigate("/");
+    }
+  }, [user, navigate]);
+
   const handleLogout = async () => {
     const fetchData = await fetch(SummaryApi.logout_user.url, {
       method: SummaryApi.logout_user.method,
@@ -165,7 +175,6 @@ const AdminPanel = () => {
 
     if (data.success) {
       toast.success(data.message);
-      navigate("/");
       dispatch(setUserDetails(null));
     }
 
@@ -255,7 +264,6 @@ const AdminPanel = () => {
     </Menu>
   );
 
-  const user = useSelector((state) => state?.user?.user);
   return (
     <ThemeProvider theme={defaultTheme}>
       <Box sx={{ display: "flex" }}>
@@ -381,10 +389,9 @@ const AdminPanel = () => {
         >
           <Toolbar />
 
-          <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+          <Container maxWidth="none" sx={{ mt: 4, mb: 4 }}>
             <Grid container spacing={3}>
-              {/* Chart */}
-              <Grid item xs={12} md={8} lg={9}>
+              {/* <Grid item xs={12} md={8} lg={9}>
                 <Paper
                   sx={{
                     p: 2,
@@ -396,7 +403,7 @@ const AdminPanel = () => {
                   dsada
                 </Paper>
               </Grid>
-              {/* Recent Deposits */}
+
               <Grid item xs={12} md={4} lg={3}>
                 <Paper
                   sx={{
@@ -408,8 +415,8 @@ const AdminPanel = () => {
                 >
                   asdasdasdas
                 </Paper>
-              </Grid>
-              {/* Recent Orders */}
+              </Grid> */}
+
               <Grid item xs={12}>
                 <Paper sx={{ p: 2, display: "flex", flexDirection: "column" }}>
                   <main>
