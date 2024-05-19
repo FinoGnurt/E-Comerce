@@ -66,8 +66,21 @@ const SearchInput = styled(InputBase)(({ theme }) => ({
 const Header2 = () => {
   //Search
   const [searchValue, setSearchValue] = useState("");
+  const [isFocused, setIsFocused] = useState(false);
+
+  const handleFocus = () => {
+    setIsFocused(true);
+  };
+
+  const handleBlur = () => {
+    if (!searchValue) {
+      setIsFocused(false);
+    }
+  };
+
   const handleClear = () => {
     setSearchValue("");
+    setIsFocused(false);
   };
 
   //Account
@@ -82,7 +95,6 @@ const Header2 = () => {
 
   const user = useSelector((state) => state?.user?.user);
   const dispatch = useDispatch();
-  console.log("userProfile", user);
 
   const handleLogout = async () => {
     const fetchData = await fetch(SummaryApi.logout_user.url, {
@@ -129,11 +141,16 @@ const Header2 = () => {
               inputProps={{ "aria-label": "search" }}
               value={searchValue}
               onChange={(e) => setSearchValue(e.target.value)}
+              onFocus={handleFocus}
+              onBlur={handleBlur}
               sx={{
-                width: searchValue ? "270px" : "0px",
-                opacity: searchValue ? 1 : 0,
-                border: searchValue ? "0.5px solid #d1d1d1" : "none",
-                borderRadius: searchValue ? "100rem" : "none",
+                width: isFocused || searchValue ? "270px" : "0px",
+                opacity: isFocused || searchValue ? 1 : 0,
+                border:
+                  isFocused || searchValue ? "0.5px solid #d1d1d1" : "none",
+                borderRadius: isFocused || searchValue ? "100rem" : "none",
+                transition: "0.4s all",
+                backgroundColor: "#0000001a",
               }}
             />
             <IconButton>

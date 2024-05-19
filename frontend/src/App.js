@@ -24,8 +24,6 @@ function App() {
     if (dataAPI.success) {
       dispatch(setUserDetails(dataAPI.data));
     }
-
-    console.log("data", dataResponse);
   };
 
   useEffect(() => {

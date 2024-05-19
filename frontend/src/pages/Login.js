@@ -72,8 +72,6 @@ const Login = () => {
     }
   };
 
-  console.log("data", data);
-
   //Hide/Show Password
   const [showPassword, setShowPassword] = React.useState(false);
   const [textShowIcon, setTextShowIcon] = React.useState(false);

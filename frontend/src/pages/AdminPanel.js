@@ -30,7 +30,7 @@ import {
 } from "../components/admin/listItems";
 import { Avatar, InputBase, alpha } from "@mui/material";
 
-import { useNavigate } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import SummaryApi from "../common";
 import { setUserDetails } from "../store/userSlice";
@@ -412,7 +412,9 @@ const AdminPanel = () => {
               {/* Recent Orders */}
               <Grid item xs={12}>
                 <Paper sx={{ p: 2, display: "flex", flexDirection: "column" }}>
-                  sadasdasasd
+                  <main>
+                    <Outlet />
+                  </main>
                 </Paper>
               </Grid>
             </Grid>
