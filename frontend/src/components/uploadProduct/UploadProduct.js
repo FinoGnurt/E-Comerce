@@ -17,6 +17,7 @@ import {
   styled,
 } from "@mui/material";
 import { CloudUpload } from "@mui/icons-material";
+import uploadImage from "../../helpers/uploadImage";
 
 const style = {
   position: "absolute",
@@ -51,10 +52,20 @@ const UploadProduct = ({ open, handleClose }) => {
 
   const handleOnChange = (e) => {};
 
-  const handleUploadProduct = (e) => {
+  const handleUploadProduct = async (e) => {
     const file = e.target.files[0];
     setUploadProductImage(file.name);
-    console.log(e);
+    console.log("file:", file);
+
+    const uploadImageCloudinary = await uploadImage(file);
+
+    setData((prev) => {
+      return {
+        ...prev,
+        productImage: [...prev.productImage, uploadImageCloudinary.url],
+      };
+    });
+    console.log(uploadImageCloudinary);
   };
   return (
     <div>
