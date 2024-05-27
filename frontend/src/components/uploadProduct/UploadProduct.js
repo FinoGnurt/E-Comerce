@@ -9,14 +9,19 @@ import {
   FormControlLabel,
   FormLabel,
   Grid,
+  IconButton,
   ImageList,
   ImageListItem,
+  InputAdornment,
   Modal,
   OutlinedInput,
   Typography,
   styled,
 } from "@mui/material";
 import { CloudUpload } from "@mui/icons-material";
+import uploadImage from "../../helpers/uploadImage";
+import DisplayImage from "../displayImage/DisplayImage";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 const style = {
   position: "absolute",
@@ -35,7 +40,25 @@ const FormGrid = styled(Grid)(() => ({
   flexDirection: "column",
 }));
 
+const Textarea = {
+  fontFamily: "inherit",
+  font: "inherit",
+  letterSpacing: "inherit",
+  color: "currentColor",
+  fontWeight: "inherit",
+  fontSize: "inherit",
+  padding: "16.5px 14px",
+};
+
 const UploadProduct = ({ open, handleClose }) => {
+  //modal image
+  const [openModalImg, setOpenModalImg] = React.useState(false);
+  const handleOpenModalImg = () => setOpenModalImg(true);
+  const handleCloseModalImg = () => setOpenModalImg(false);
+
+  //link img modal""
+  const [fullScreenImgUrl, setFullScreenImgUrl] = useState("");
+
   //Backend
   const [data, setData] = useState({
     productName: "",
@@ -44,17 +67,48 @@ const UploadProduct = ({ open, handleClose }) => {
     productImage: [],
     description: "",
     price: "",
-    selling: "",
+    sellingPrice: "",
   });
 
   const [uploadProductImage, setUploadProductImage] = useState("");
 
-  const handleOnChange = (e) => {};
+  const handleOnChange = (e) => {
+    const { name, value } = e.target;
 
-  const handleUploadProduct = (e) => {
+    setData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleUploadProduct = async (e) => {
     const file = e.target.files[0];
     setUploadProductImage(file.name);
-    console.log(e);
+    console.log(file);
+
+    const uploadImageCloudinary = await uploadImage(file);
+
+    setData((prev) => {
+      return {
+        ...prev,
+        productImage: [...prev.productImage, uploadImageCloudinary.url],
+      };
+    });
+
+    console.log("sss", uploadImageCloudinary);
+  };
+
+  //delete img button
+  const handleDeleteProductImage = async (index) => {
+    console.log("image index", index);
+
+    const newProductImage = [...data.productImage];
+    newProductImage.splice(index, 1);
+
+    setData((prev) => ({
+      ...prev,
+      productImage: [...newProductImage],
+    }));
   };
   return (
     <div>
@@ -187,82 +241,155 @@ const UploadProduct = ({ open, handleClose }) => {
                   </Button>
                 </Box>
               </FormGrid>
-              <ImageList
-                sx={{ width: 300, height: 250 }}
-                cols={3}
-                rowHeight={164}
-              >
-                <ImageListItem>
-                  <img
-                    srcSet="{`${item.img}?w=164&h=164&fit=crop&auto=format&dpr=2 2x`}"
-                    src="{`${item.img}?w=164&h=164&fit=crop&auto=format`}"
-                    alt=""
-                    loading="lazy"
-                  />
-                </ImageListItem>
-              </ImageList>
-              <FormGrid item xs={6}>
-                <FormLabel htmlFor="city" required>
-                  City
+              {data?.productImage[0] ? (
+                <FormGrid
+                  item
+                  xs={12}
+                  paddingTop={"10px !important"}
+                  maxHeight={250}
+                >
+                  <ImageList
+                    sx={{
+                      m: 0,
+                      p: 1,
+                      bgcolor: "#e1e1e1",
+                      borderRadius: "10px",
+                    }}
+                    cols={3}
+                    rowHeight={100}
+                  >
+                    {data.productImage.map((img, index) => (
+                      <ImageListItem
+                        sx={{
+                          border: "1px solid #7f7f7f",
+                          p: "0 !important",
+                          cursor: "zoom-in",
+                          position: "relative",
+                          backgroundColor: "#e0e0e0",
+                          borderRadius: "5px",
+                          "&:hover .hoverImage": {
+                            opacity: 1,
+                          },
+                        }}
+                      >
+                        <img
+                          style={{ objectFit: "contain", height: "100%" }}
+                          key={index}
+                          srcSet={img}
+                          src={img}
+                          alt="product"
+                          loading="lazy"
+                          onClick={() => {
+                            handleOpenModalImg();
+                            setFullScreenImgUrl(img);
+                          }}
+                        />
+                        <IconButton
+                          className="hoverImage"
+                          sx={{
+                            backgroundColor: "#c8c8c8",
+                            position: "absolute",
+                            bottom: 6,
+                            right: 6,
+                            opacity: 0,
+                            p: 0.5,
+                            transition: "0.3s all",
+                            "&:hover .hoverIconDelete": {
+                              color: "#ff3a3a",
+                            },
+                            "&:hover": { backgroundColor: "#484848" },
+                          }}
+                          onClick={() => {
+                            handleDeleteProductImage(index);
+                          }}
+                        >
+                          <DeleteIcon
+                            fontSize="small"
+                            className="hoverIconDelete"
+                          />
+                        </IconButton>
+                      </ImageListItem>
+                    ))}
+                  </ImageList>
+                </FormGrid>
+              ) : (
+                <FormGrid item xs={12} paddingTop={"0 !important"}>
+                  <Typography color={"red"}>
+                    *Please upload product image
+                  </Typography>
+                </FormGrid>
+              )}
+              <FormGrid item xs={12} md={6}>
+                <FormLabel htmlFor="price" required>
+                  Price :
                 </FormLabel>
                 <OutlinedInput
-                  id="city"
-                  name="city"
-                  type="city"
-                  placeholder="New York"
-                  autoComplete="City"
+                  id="price"
+                  name="price"
+                  type="number"
+                  placeholder="enter price price"
+                  autoComplete="price"
+                  value={data.price}
+                  onChange={handleOnChange}
+                  endAdornment={
+                    <InputAdornment position="end">đ</InputAdornment>
+                  }
                   required
                 />
               </FormGrid>
-              <FormGrid item xs={6}>
-                <FormLabel htmlFor="state" required>
-                  State
+
+              <FormGrid item xs={12} md={6}>
+                <FormLabel htmlFor="sellingPrice" required>
+                  Selling Price :
                 </FormLabel>
                 <OutlinedInput
-                  id="state"
-                  name="state"
-                  type="state"
-                  placeholder="NY"
-                  autoComplete="State"
+                  id="sellingPrice"
+                  name="sellingPrice"
+                  type="number"
+                  placeholder="enter selling price"
+                  autoComplete="sellingPrice"
+                  value={data.sellingPrice}
+                  onChange={handleOnChange}
+                  endAdornment={
+                    <InputAdornment position="end">đ</InputAdornment>
+                  }
                   required
                 />
               </FormGrid>
-              <FormGrid item xs={6}>
-                <FormLabel htmlFor="zip" required>
-                  Zip / Postal code
+
+              <FormGrid item xs={12}>
+                <FormLabel htmlFor="sellingPrice" required>
+                  Description :
                 </FormLabel>
-                <OutlinedInput
-                  id="zip"
-                  name="zip"
-                  type="zip"
-                  placeholder="12345"
-                  autoComplete="shipping postal-code"
+                <textarea
+                  style={Textarea}
+                  placeholder="enter product description"
+                  onChange={handleOnChange}
+                  name="description"
+                  value={data.description}
                   required
-                />
-              </FormGrid>
-              <FormGrid item xs={6}>
-                <FormLabel htmlFor="country" required>
-                  Country
-                </FormLabel>
-                <OutlinedInput
-                  id="country"
-                  name="country"
-                  type="country"
-                  placeholder="United States"
-                  autoComplete="shipping country"
-                  required
-                />
+                ></textarea>
               </FormGrid>
               <FormGrid item xs={12}>
-                <FormControlLabel
-                  control={<Checkbox name="saveAddress" value="yes" />}
-                  label="Use this address for payment details"
-                />
+                <Button
+                  type="submit"
+                  width="100%"
+                  variant="contained"
+                  color="primary"
+                >
+                  Contained
+                </Button>
               </FormGrid>
             </Grid>
           </Box>
         </Fade>
       </Modal>
+
+      <DisplayImage
+        openModalImg={openModalImg}
+        handleCloseModalImg={handleCloseModalImg}
+        imgUrl={fullScreenImgUrl}
+      />
     </div>
   );
 };
