@@ -32,6 +32,7 @@ import SummaryApi from "../../common";
 import toast from "react-hot-toast";
 import { setUserDetails } from "../../store/userSlice";
 import ROLE from "../../common/role";
+import Navbar from "./Navbar";
 
 //Card style
 const StyledBadge = styled(Badge)(({ theme }) => ({
@@ -118,12 +119,59 @@ const Header2 = () => {
   return (
     <Box sx={{ py: 2.5, boxShadow: "0 0 16px rgba(0, 0, 0, 0.15)" }}>
       <Container sx={{ display: "flex", justifyContent: "space-between" }}>
-        <Link to={"/"}>
-          <Stack alignItems={"center"}>
-            <ShoppingCartOutlined />
-            <Typography variant="body2">E-commerce</Typography>
-          </Stack>
-        </Link>
+        <Box display={"flex"} gap={10}>
+          <Link to={"/"}>
+            <Stack alignItems={"center"}>
+              <ShoppingCartOutlined />
+              <Typography variant="body2">E-commerce</Typography>
+            </Stack>
+          </Link>
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+            }}
+          >
+            <Box
+              display={"flex"}
+              sx={{
+                maxWidth: "300px",
+                width: "300px",
+                justifyContent: "space-between",
+              }}
+            >
+              {["Home", "Shop", "Blog", "Contact"].map((item, index) => {
+                return (
+                  <Box
+                    key={index}
+                    sx={{
+                      position: "relative",
+                      display: "flex",
+                      alignItems: "center",
+                      cursor: "pointer",
+                      "&::after": {
+                        content: '""',
+                        position: "absolute",
+                        left: 0,
+                        bottom: 0,
+                        width: 0,
+                        borderBottom: "2px solid black",
+                        transition: "0.3s all",
+                      },
+                      "&:hover::after": {
+                        width: "100%",
+                      },
+                    }}
+                  >
+                    <Typography variant="body1" textTransform={"uppercase"}>
+                      {item}
+                    </Typography>
+                  </Box>
+                );
+              })}
+            </Box>
+          </Box>
+        </Box>
 
         <Box display={"flex"}>
           <SearchBar
@@ -155,12 +203,6 @@ const Header2 = () => {
               }}
             />
             <IconButton>
-              {/* <Search sx={{ display: searchValue ? "none" : "block" }} />
-              <Clear
-                onClick={handleClear}
-                sx={{ display: searchValue ? "block" : "none" }}
-              /> */}
-              {/* {searchValue ? <Clear /> : <Search />} */}
               {searchValue ? <Clear onClick={handleClear} /> : <Search />}
             </IconButton>
           </SearchBar>
@@ -182,7 +224,6 @@ const Header2 = () => {
                         src={user?.profilePic || null}
                         alt={user?.name}
                       />
-                      {/* {user?.profilePic ? (<img src={user?.profilePic} />) : null} */}
                     </IconButton>
                   </Tooltip>
                 </Box>
@@ -272,9 +313,7 @@ const Header2 = () => {
               <Link to={"/login"}>
                 <Typography
                   sx={{
-                    // backgroundColor: "pink",
                     px: 1,
-                    borderRadius: "10px",
                     position: "relative",
                     "&::after": {
                       content: '""',

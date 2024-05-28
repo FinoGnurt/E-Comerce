@@ -4,7 +4,7 @@ import Header1 from "./components/header/Header1";
 import Footer from "./components/footer/Footer";
 import Header2 from "./components/header/Header2";
 import { Toaster } from "react-hot-toast";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import SummaryApi from "./common";
 import Context from "./context";
 import { useDispatch } from "react-redux";
@@ -12,6 +12,7 @@ import { setUserDetails } from "./store/userSlice";
 
 function App() {
   const dispatch = useDispatch();
+  const [cartProductCount, setCartProductCount] = useState(0);
 
   const fetchUserDetails = async () => {
     const dataResponse = await fetch(SummaryApi.current_user.url, {
@@ -26,8 +27,20 @@ function App() {
     }
   };
 
+  const fetchUserAddToCart = async () => {
+    const dataResponse = await fetch(SummaryApi.addToCartProductCount.url, {
+      method: SummaryApi.addToCartProductCount.method,
+      credentials: "include",
+    });
+
+    const dataApi = await dataResponse.json();
+
+    setCartProductCount(dataApi?.data?.count);
+  };
+
   useEffect(() => {
     fetchUserDetails();
+    fetchUserAddToCart();
   }, []);
 
   //ẩn component với các page:.....
@@ -45,7 +58,9 @@ function App() {
     <>
       <Context.Provider
         value={{
-          fetchUserDetails, // user details fetch
+          fetchUserDetails,
+          cartProductCount,
+          fetchUserAddToCart,
         }}
       >
         <Toaster />

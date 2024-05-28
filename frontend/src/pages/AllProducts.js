@@ -1,52 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import UploadProduct from "../components/uploadProduct/UploadProduct";
-import { Box, Button } from "@mui/material";
-import { useSpring, animated } from "@react-spring/web";
-import PropTypes from "prop-types";
-
-//Transition Modal
-const Fade = React.forwardRef(function Fade(props, ref) {
-  const {
-    children,
-    in: open,
-    onClick,
-    onEnter,
-    onExited,
-    ownerState,
-    ...other
-  } = props;
-  const style = useSpring({
-    from: { opacity: 0 },
-    to: { opacity: open ? 1 : 0 },
-    onStart: () => {
-      if (open && onEnter) {
-        onEnter(null, true);
-      }
-    },
-    onRest: () => {
-      if (!open && onExited) {
-        onExited(null, true);
-      }
-    },
-  });
-
-  return (
-    <animated.div ref={ref} style={style} {...other}>
-      {React.cloneElement(children, { onClick })}
-    </animated.div>
-  );
-});
-
-Fade.propTypes = {
-  children: PropTypes.element.isRequired,
-  in: PropTypes.bool,
-  onClick: PropTypes.any,
-  onEnter: PropTypes.func,
-  onExited: PropTypes.func,
-  ownerState: PropTypes.any,
-};
+import { Box, Button, Typography } from "@mui/material";
+import SummaryApi from "../common";
+import AdminProductCard from "../components/adminProductCard/AdminProductCard";
 
 const AllProducts = () => {
+  //modal
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -62,19 +21,77 @@ const AllProducts = () => {
     setIsHovered(false);
   };
 
+  //backend, get all product
+  const [allProduct, setAllProduct] = useState([]);
+
+  const fetchAllProduct = async () => {
+    const response = await fetch(SummaryApi.allProduct.url);
+    const dataResponse = await response.json();
+
+    console.log("product data", dataResponse);
+
+    setAllProduct(dataResponse?.data || []);
+  };
+
+  useEffect(() => {
+    fetchAllProduct();
+  }, []);
+
   return (
     <Box>
-      <Button
-        variant={isHovered ? "outlined" : "contained"}
-        color="info"
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
-        onClick={handleOpen}
+      <Box
+        display={"flex"}
+        width={"100%"}
+        sx={{
+          p: 3,
+          justifyContent: { xs: "center", sm: "space-between" },
+          position: "sticky",
+          top: "5%",
+          zIndex: 1000,
+          boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.3)",
+          background: "#fff",
+          borderRadius: "10px",
+          mb: "20px",
+        }}
+        flexWrap={"wrap"}
       >
-        Upload Product
-      </Button>
+        <Typography variant="h5" color={"#1976d2"}>
+          All Products
+        </Typography>
 
-      <UploadProduct open={open} handleClose={handleClose} />
+        <Button
+          variant={isHovered ? "outlined" : "contained"}
+          color="info"
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
+          onClick={handleOpen}
+        >
+          Upload Product
+        </Button>
+      </Box>
+
+      <Box
+        display={"grid"}
+        gridTemplateColumns={"repeat(auto-fit, minmax(230px, 1fr))"}
+        gap={2}
+      >
+        {allProduct.map((product, index) => {
+          console.log("dataproduct", product);
+          return (
+            <AdminProductCard
+              productData={product}
+              key={index + "allProduct"}
+              fetchdata={fetchAllProduct}
+            />
+          );
+        })}
+      </Box>
+
+      <UploadProduct
+        open={open}
+        handleClose={handleClose}
+        fetchData={fetchAllProduct}
+      />
     </Box>
   );
 };
