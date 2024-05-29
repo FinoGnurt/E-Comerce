@@ -20,13 +20,10 @@ import {
 } from "@mui/material";
 import { CloudUpload } from "@mui/icons-material";
 import uploadImage from "../../helpers/uploadImage";
-<<<<<<< HEAD
 import DisplayImage from "../displayImage/DisplayImage";
 import DeleteIcon from "@mui/icons-material/Delete";
 import SummaryApi from "../../common";
 import toast from "react-hot-toast";
-=======
->>>>>>> 861afa5c3a68129035d4e86c274022d0c607f45c
 
 const style = {
   position: "absolute",
@@ -84,7 +81,6 @@ const UploadProduct = ({ open, handleClose, fetchData }) => {
   const handleOnChange = (e) => {
     const { name, value } = e.target;
 
-<<<<<<< HEAD
     setData((prev) => ({
       ...prev,
       [name]: value,
@@ -95,12 +91,6 @@ const UploadProduct = ({ open, handleClose, fetchData }) => {
     const file = e.target.files[0];
     setUploadProductImage(file.name);
     console.log(file);
-=======
-  const handleUploadProduct = async (e) => {
-    const file = e.target.files[0];
-    setUploadProductImage(file.name);
-    console.log("file:", file);
->>>>>>> 861afa5c3a68129035d4e86c274022d0c607f45c
 
     const uploadImageCloudinary = await uploadImage(file);
 
@@ -110,7 +100,6 @@ const UploadProduct = ({ open, handleClose, fetchData }) => {
         productImage: [...prev.productImage, uploadImageCloudinary.url],
       };
     });
-<<<<<<< HEAD
 
     console.log("sss", uploadImageCloudinary);
   };
@@ -166,9 +155,6 @@ const UploadProduct = ({ open, handleClose, fetchData }) => {
     if (responseData.error) {
       toast.error(responseData?.message);
     }
-=======
-    console.log(uploadImageCloudinary);
->>>>>>> 861afa5c3a68129035d4e86c274022d0c607f45c
   };
   return (
     <div>

@@ -47,7 +47,7 @@ const CategoryList = () => {
                   sx={{
                     mx: "5px",
                     borderRadius: "12px",
-                    background: "#d5d5d5",
+                    background: "#e5e5e5",
                     "&:hover": {
                       boxShadow:
                         " -4px -4px 8px rgba(134, 134, 134, .2), 4px 4px 8px rgba(28, 28, 28, .4)",
