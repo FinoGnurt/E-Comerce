@@ -65,6 +65,12 @@ const SearchInput = styled(InputBase)(({ theme }) => ({
   padding: "0 45px 0 15px",
 }));
 
+//Array
+const linkNav = {
+  name: ["Home", "Shop", "Blog", "Contact"],
+  link: ["/", "/", "/blog", "/contact"],
+};
+
 const Header2 = () => {
   //Search
   const [searchValue, setSearchValue] = useState("");
@@ -140,7 +146,8 @@ const Header2 = () => {
                 justifyContent: "space-between",
               }}
             >
-              {["Home", "Shop", "Blog", "Contact"].map((item, index) => {
+              {linkNav.name.map((item, index) => {
+                console.log("dasas", item.name);
                 return (
                   <Box
                     key={index}
@@ -163,9 +170,15 @@ const Header2 = () => {
                       },
                     }}
                   >
-                    <Typography variant="body1" textTransform={"uppercase"}>
-                      {item}
-                    </Typography>
+                    <Link to={linkNav.link[index]}>
+                      <Typography
+                        variant="body1"
+                        textTransform={"uppercase"}
+                        fontWeight={500}
+                      >
+                        {item}
+                      </Typography>
+                    </Link>
                   </Box>
                 );
               })}
@@ -284,18 +297,6 @@ const Header2 = () => {
                     </Link>
                   )}
                   <Divider />
-                  <MenuItem onClick={handleClose}>
-                    <ListItemIcon>
-                      <PersonAdd fontSize="small" />
-                    </ListItemIcon>
-                    Add another account
-                  </MenuItem>
-                  <MenuItem onClick={handleClose}>
-                    <ListItemIcon>
-                      <Settings fontSize="small" />
-                    </ListItemIcon>
-                    Settings
-                  </MenuItem>
                   <MenuItem
                     onClick={(e) => {
                       handleClose(e);

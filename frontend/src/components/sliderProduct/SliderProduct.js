@@ -43,212 +43,240 @@ const SliderProduct = ({ category, title, sliderId }) => {
     fetchData();
   }, []);
 
+  console.log(data);
+  console.log(data.length);
+
+  //swiper disable button when end
+  const [isBeginning, setIsBeginning] = useState(true);
+  const [isEnd, setIsEnd] = useState(false);
+
+  const handleSwiper = (swiper) => {
+    setIsBeginning(swiper.isBeginning);
+    setIsEnd(swiper.isEnd);
+    swiper.on("slideChange", () => {
+      setIsBeginning(swiper.isBeginning);
+      setIsEnd(swiper.isEnd);
+    });
+  };
   return (
     <Container>
-      <Box sx={{ mt: 6 }}>
-        <Typography variant="h4">{title}</Typography>
-        <Typography fontWeight={300} variant="body1">
-          All our new arrivals in a exclusive brand selection
-        </Typography>
-      </Box>
-      <Box sx={{ position: "relative" }}>
-        <Swiper
-          slidesPerView={4}
-          centeredSlides={false}
-          grabCursor={true}
-          speed={1000}
-          keyboard={{
-            enabled: true,
-          }}
-          breakpoints={{
-            769: {
-              slidesPerView: 4,
-              slidesPerGroup: 4,
-            },
-          }}
-          scrollbar={true}
-          navigation={{
-            nextEl: `.buttonNext${sliderId}`,
-            prevEl: `.buttonPrev${sliderId}`,
-          }}
-          modules={[Keyboard, Scrollbar, Navigation, Pagination]}
-          className="mySwiper"
-        >
-          {loading
-            ? loadingList.map((product, index) => {
-                return (
-                  <SwiperSlide className="swiperCard" key={index}>
-                    <Card
-                      className="cardHover"
-                      sx={{
-                        maxWidth: 345,
-                        width: "500px",
-                        cursor: "pointer",
-                        border: "1px solid #c7c7c7",
-                        transition: "all 0.3s",
-                      }}
-                    >
-                      <Box
-                        sx={{
-                          display: "flex",
-                          justifyItems: "center",
-                          alignItems: "center",
-                          flexDirection: "column",
-                        }}
-                      >
-                        <Skeleton
-                          animation="wave"
-                          variant="rectangular"
+      {data.length < 1 ? null : (
+        <>
+          <Box sx={{ mt: 6 }}>
+            <Typography variant="h4">{title}</Typography>
+            <Typography fontWeight={300} variant="body1">
+              All our new arrivals in a exclusive brand selection
+            </Typography>
+          </Box>
+          <Box sx={{ position: "relative" }}>
+            <Swiper
+              onSwiper={handleSwiper}
+              slidesPerView={4}
+              centeredSlides={false}
+              grabCursor={true}
+              speed={1000}
+              keyboard={{
+                enabled: true,
+              }}
+              breakpoints={{
+                769: {
+                  slidesPerView: 4,
+                  slidesPerGroup: 4,
+                },
+              }}
+              scrollbar={true}
+              navigation={{
+                nextEl: `.buttonNext${sliderId}`,
+                prevEl: `.buttonPrev${sliderId}`,
+              }}
+              modules={[Keyboard, Scrollbar, Navigation, Pagination]}
+              className="mySwiper"
+            >
+              {loading
+                ? loadingList.map((_, index) => {
+                    return (
+                      <SwiperSlide className="swiperCard" key={index}>
+                        <Card
+                          className="cardHover"
                           sx={{
-                            width: "calc(100% - (16px*2)) !important",
-                            height: "234px",
-                            mt: "16px",
+                            maxWidth: 345,
+                            width: "500px",
+                            cursor: "pointer",
+                            border: "1px solid #c7c7c7",
+                            transition: "all 0.3s",
                           }}
-                        />
-                        <CardContent>
-                          <Skeleton
-                            animation="wave"
-                            variant="text"
-                            width="100%"
-                            height={40}
-                          />
-                          <Skeleton
-                            animation="wave"
-                            variant="text"
-                            width="100%"
-                            height={30}
-                          />
+                        >
                           <Box
-                            display={"flex"}
-                            justifyContent={"space-between"}
-                            mt={"10px"}
+                            sx={{
+                              display: "flex",
+                              justifyItems: "center",
+                              alignItems: "center",
+                              flexDirection: "column",
+                            }}
                           >
                             <Skeleton
                               animation="wave"
-                              variant="text"
-                              width="40%"
-                              height={30}
+                              variant="rectangular"
+                              sx={{
+                                width: "calc(100% - (16px*2)) !important",
+                                height: "234px",
+                                mt: "16px",
+                              }}
                             />
-                            <Skeleton
-                              animation="wave"
-                              variant="text"
-                              width="40%"
-                              height={30}
-                            />
+                            <CardContent>
+                              <Skeleton
+                                animation="wave"
+                                variant="rounded"
+                                width="100%"
+                                height={32}
+                                sx={{ mb: "7px" }}
+                              />
+                              <Skeleton
+                                animation="wave"
+                                variant="rounded"
+                                width="100%"
+                                height={24}
+                              />
+                              <Box
+                                display={"flex"}
+                                justifyContent={"space-between"}
+                                mt={"10px"}
+                              >
+                                <Skeleton
+                                  animation="wave"
+                                  variant="rounded"
+                                  width="40%"
+                                  height={20.02}
+                                />
+                                <Skeleton
+                                  animation="wave"
+                                  variant="rounded"
+                                  width="40%"
+                                  height={20.02}
+                                />
+                              </Box>
+                            </CardContent>
                           </Box>
-                        </CardContent>
-                      </Box>
-                      <Button
-                        variant="outlined"
-                        color="primary"
-                        sx={{
-                          mx: 2,
-                          mb: 2,
-                          width: "calc(100% - (16px*2))",
-                        }}
-                      >
-                        Add To Card
-                      </Button>
-                    </Card>
-                  </SwiperSlide>
-                );
-              })
-            : data.map((product, index) => {
-                return (
-                  <SwiperSlide className="swiperCard" key={index}>
-                    <Card
-                      className="cardHover"
-                      sx={{
-                        maxWidth: 345,
-                        cursor: "pointer",
-                        border: "1px solid #c7c7c7",
-                        transition: "all 0.3s",
-                      }}
-                    >
-                      <Box
-                        sx={{
-                          display: "flex",
-                          justifyItems: "center",
-                          alignItems: "center",
-                          flexDirection: "column",
-                        }}
-                      >
-                        <CardMedia
+                          <Skeleton
+                            variant="rounded"
+                            animation="wave"
+                            height={36.5}
+                            sx={{
+                              mx: 2,
+                              mb: 2,
+                              width: "calc(100% - (16px*2))",
+                            }}
+                          />
+                        </Card>
+                      </SwiperSlide>
+                    );
+                  })
+                : data.map((product, index) => {
+                    return (
+                      <SwiperSlide className="swiperCard" key={index}>
+                        <Card
+                          className="cardHover"
                           sx={{
-                            width: "calc(100% - (16px*2)) !important",
-                            border: "1px solid black",
-                            aspectRatio: "1/1 !important",
-                            objectFit: "contain !important",
-                            background: "#cbcbcb",
-                            mt: "16px",
-                            boxSizing: "border-box",
+                            maxWidth: 345,
+                            cursor: "pointer",
+                            border: "1px solid #c7c7c7",
+                            transition: "all 0.3s",
                           }}
-                          component="img"
-                          image={product.productImage[0]}
-                        />
-                        <CardContent>
-                          <Typography
-                            className="ellipsis-text"
-                            gutterBottom
-                            variant="h6"
-                            component="div"
-                          >
-                            {product?.productName}
-                          </Typography>
-                          <Typography
-                            variant="body1"
-                            component="div"
-                            sx={{ color: "#818181" }}
-                          >
-                            {product?.category}
-                          </Typography>
+                        >
                           <Box
-                            display={"flex"}
-                            justifyContent={"space-evenly"}
-                            mt={"10px"}
+                            sx={{
+                              display: "flex",
+                              justifyItems: "center",
+                              alignItems: "center",
+                              flexDirection: "column",
+                            }}
                           >
-                            <Typography
-                              variant="body2"
-                              color="text.secondary"
-                              sx={{ color: "red", fontWeight: "600" }}
-                            >
-                              {displayVNDCurrency(product?.sellingPrice)}
-                            </Typography>
-                            <Typography
-                              sx={{ textDecoration: "line-through" }}
-                              variant="body2"
-                              color="text.secondary"
-                            >
-                              {displayVNDCurrency(product?.price)}
-                            </Typography>
+                            <CardMedia
+                              sx={{
+                                width: "calc(100% - (16px*2)) !important",
+                                border: "1px solid black",
+                                aspectRatio: "1/1 !important",
+                                objectFit: "contain !important",
+                                background: "#cbcbcb",
+                                mt: "16px",
+                                boxSizing: "border-box",
+                              }}
+                              component="img"
+                              image={product.productImage[0]}
+                            />
+                            <CardContent>
+                              <Typography
+                                className="ellipsis-text"
+                                gutterBottom
+                                variant="h6"
+                                component="div"
+                              >
+                                {product?.productName}
+                              </Typography>
+                              <Typography
+                                variant="body1"
+                                component="div"
+                                sx={{ color: "#818181" }}
+                              >
+                                {product?.category}
+                              </Typography>
+                              <Box
+                                sx={{ display: { xs: "block", md: "flex" } }}
+                                justifyContent={"space-evenly"}
+                                mt={"10px"}
+                              >
+                                <Typography
+                                  variant="body2"
+                                  color="text.secondary"
+                                  sx={{ color: "red", fontWeight: "600" }}
+                                >
+                                  {displayVNDCurrency(product?.sellingPrice)}
+                                </Typography>
+                                <Typography
+                                  sx={{ textDecoration: "line-through" }}
+                                  variant="body2"
+                                  color="text.secondary"
+                                >
+                                  {displayVNDCurrency(product?.price)}
+                                </Typography>
+                              </Box>
+                            </CardContent>
                           </Box>
-                        </CardContent>
-                      </Box>
-                      <Button
-                        variant="outlined"
-                        color="primary"
-                        sx={{
-                          mx: 2,
-                          mb: 2,
-                          width: "calc(100% - (16px*2))",
-                        }}
-                      >
-                        Add To Card
-                      </Button>
-                    </Card>
-                  </SwiperSlide>
-                );
-              })}
-        </Swiper>
-        <Box className="buttonSlider">
-          <IconButton className={`buttonPrev${sliderId} buttonArrow`}>
-            <ArrowBackIosNewIcon />
-          </IconButton>
-          <IconButton className={`buttonNext${sliderId} buttonArrow`}>
-            <ArrowForwardIosIcon />
-          </IconButton>
-        </Box>
-      </Box>
+                          <Button
+                            variant="outlined"
+                            color="primary"
+                            sx={{
+                              mx: 2,
+                              mb: 2,
+                              width: "calc(100% - (16px*2))",
+                            }}
+                          >
+                            Add To Card
+                          </Button>
+                        </Card>
+                      </SwiperSlide>
+                    );
+                  })}
+            </Swiper>
+            {loading || data.length <= 4 ? null : (
+              <Box className="buttonSlider">
+                <IconButton
+                  disabled={isBeginning}
+                  className={`buttonPrev${sliderId} buttonArrow`}
+                >
+                  <ArrowBackIosNewIcon />
+                </IconButton>
+                <IconButton
+                  disabled={isEnd}
+                  className={`buttonNext${sliderId} buttonArrow`}
+                >
+                  <ArrowForwardIosIcon />
+                </IconButton>
+              </Box>
+            )}
+          </Box>
+        </>
+      )}
     </Container>
   );
 };

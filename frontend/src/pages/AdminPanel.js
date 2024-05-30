@@ -30,7 +30,7 @@ import {
 } from "../components/admin/listItems";
 import { Avatar, InputBase, alpha } from "@mui/material";
 
-import { Outlet, useNavigate } from "react-router-dom";
+import { Link as LinkRouter, Outlet, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import SummaryApi from "../common";
 import { setUserDetails } from "../store/userSlice";
@@ -200,14 +200,20 @@ const AdminPanel = () => {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
+      <Link
+        to="/"
+        component={LinkRouter}
+        sx={{ textDecoration: "none", color: "black" }}
+      >
+        <MenuItem onClick={handleMenuClose}>Back</MenuItem>
+      </Link>
       <MenuItem
         onClick={(e) => {
           handleMenuClose(e);
           handleLogout(e);
         }}
       >
-        My account
+        Logout
       </MenuItem>
     </Menu>
   );
@@ -251,15 +257,15 @@ const AdminPanel = () => {
       </MenuItem>
       <MenuItem onClick={handleProfileMenuOpen}>
         <IconButton
-          size="large"
           aria-label="account of current user"
           aria-controls="primary-search-account-menu"
           aria-haspopup="true"
           color="inherit"
+          sx={{ p: 0 }}
         >
-          <AccountCircle />
+          <Avatar src={user?.profilePic || null} alt={user?.name} />
         </IconButton>
-        <p>Profile</p>
+        {user?.firstName + " " + user?.lastName}
       </MenuItem>
     </Menu>
   );
@@ -272,60 +278,50 @@ const AdminPanel = () => {
           <Toolbar
             sx={{
               pr: "24px", // keep right padding when drawer closed
+              justifyContent: "space-between",
             }}
           >
-            <IconButton
-              edge="start"
-              color="inherit"
-              aria-label="open drawer"
-              onClick={toggleDrawer}
+            <Box display={"flex"}>
+              <IconButton
+                edge="start"
+                color="inherit"
+                aria-label="open drawer"
+                onClick={toggleDrawer}
+                sx={{
+                  marginRight: "36px",
+                  ...(open && { display: "none" }),
+                }}
+              >
+                <MenuIcon />
+              </IconButton>
+              <Typography
+                display={"flex"}
+                alignItems={"center"}
+                component="h1"
+                variant="h6"
+                color="inherit"
+                noWrap
+              >
+                Dashboard
+              </Typography>
+            </Box>
+            <Box
               sx={{
-                marginRight: "36px",
-                ...(open && { display: "none" }),
+                display: { xs: "none", md: "flex" },
               }}
             >
-              <MenuIcon />
-            </IconButton>
-            <Typography
-              component="h1"
-              variant="h6"
-              color="inherit"
-              noWrap
-              sx={{ flexGrow: 1 }}
-            >
-              Dashboard
-            </Typography>
-            <Search>
-              <SearchIconWrapper>
-                <SearchIcon />
-              </SearchIconWrapper>
-              <StyledInputBase
-                placeholder="Search…"
-                inputProps={{ "aria-label": "search" }}
-              />
-            </Search>
-            <Box sx={{ flexGrow: 1 }} />
-            <Box sx={{ display: { xs: "none", md: "flex" } }}>
-              <IconButton
-                size="large"
-                aria-label="show 4 new mails"
-                color="inherit"
+              <Box
+                display={"flex"}
+                justifyContent={"center"}
+                flexDirection={"column"}
               >
-                <Badge badgeContent={4} color="error">
-                  <MailIcon />
-                </Badge>
-              </IconButton>
-              <IconButton
-                size="large"
-                aria-label="show 17 new notifications"
-                color="inherit"
-              >
-                <Badge badgeContent={17} color="error">
-                  <NotificationsIcon />
-                </Badge>
-              </IconButton>
-              <Typography>{user?.firstName + " " + user?.lastName}</Typography>
-              <Typography>{user?.role}</Typography>
+                <Typography display={"flex"} justifyContent={"center"}>
+                  {user?.role}
+                </Typography>
+                <Typography display={"flex"} justifyContent={"center"}>
+                  {user?.firstName + " " + user?.lastName}
+                </Typography>
+              </Box>
               <IconButton
                 size="large"
                 edge="end"
@@ -391,32 +387,6 @@ const AdminPanel = () => {
 
           <Container maxWidth="none" sx={{ mt: 4, mb: 4 }}>
             <Grid container spacing={3}>
-              {/* <Grid item xs={12} md={8} lg={9}>
-                <Paper
-                  sx={{
-                    p: 2,
-                    display: "flex",
-                    flexDirection: "column",
-                    height: 240,
-                  }}
-                >
-                  dsada
-                </Paper>
-              </Grid>
-
-              <Grid item xs={12} md={4} lg={3}>
-                <Paper
-                  sx={{
-                    p: 2,
-                    display: "flex",
-                    flexDirection: "column",
-                    height: 240,
-                  }}
-                >
-                  asdasdasdas
-                </Paper>
-              </Grid> */}
-
               <Grid item xs={12}>
                 <Paper sx={{ p: 2, display: "flex", flexDirection: "column" }}>
                   <main>
