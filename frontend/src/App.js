@@ -4,6 +4,9 @@ import Header1 from "./components/header/Header1";
 import Footer from "./components/footer/Footer";
 import Header2 from "./components/header/Header2";
 import { Toaster } from "react-hot-toast";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { Transition } from "react-transition-group";
 import { useEffect, useState } from "react";
 import SummaryApi from "./common";
 import Context from "./context";
@@ -54,8 +57,38 @@ function App() {
   ];
   const hideHeaderAndFooter = excludePaths.includes(location.pathname);
 
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollTop =
+        window.pageYOffset || document.documentElement.scrollTop;
+      setIsScrolled(scrollTop > 20); // Set isScrolled to true if scrollTop is greater than 0
+    };
+
+    window.addEventListener("scroll", handleScroll);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
   return (
     <>
+      <Transition in={isScrolled}>
+        {(state) => (
+          <ToastContainer
+            style={{
+              top: state === "entered" ? "85px" : "135px",
+              transition: "top 0.3s ease",
+            }}
+            pauseOnHover={false}
+          />
+        )}
+      </Transition>
+
+      <Toaster />
+
       <Context.Provider
         value={{
           fetchUserDetails,
@@ -63,7 +96,6 @@ function App() {
           fetchUserAddToCart,
         }}
       >
-        <Toaster />
         {!hideHeaderAndFooter && <Header1 />}
         {!hideHeaderAndFooter && <Header2 />}
 

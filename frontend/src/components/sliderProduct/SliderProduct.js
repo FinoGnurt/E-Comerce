@@ -24,6 +24,8 @@ import Typography from "@mui/material/Typography";
 import { CardActionArea } from "@mui/material";
 import fetchCategoryWiseProduct from "../../helpers/fetchCategoryWiseProduct";
 import displayVNDCurrency from "../../helpers/displayCurrency";
+import { Link } from "react-router-dom";
+import addToCart from "../../helpers/addToCart";
 
 const SliderProduct = ({ category, title, sliderId }) => {
   const [data, setData] = useState([]);
@@ -174,86 +176,92 @@ const SliderProduct = ({ category, title, sliderId }) => {
                 : data.map((product, index) => {
                     return (
                       <SwiperSlide className="swiperCard" key={index}>
-                        <Card
-                          className="cardHover"
-                          sx={{
-                            maxWidth: 345,
-                            cursor: "pointer",
-                            border: "1px solid #c7c7c7",
-                            transition: "all 0.3s",
-                          }}
+                        <Link
+                          style={{ width: "100%" }}
+                          to={"product/" + product?._id}
                         >
-                          <Box
+                          <Card
+                            className="cardHover"
                             sx={{
-                              display: "flex",
-                              justifyItems: "center",
-                              alignItems: "center",
-                              flexDirection: "column",
+                              maxWidth: 345,
+                              cursor: "pointer",
+                              border: "1px solid #c7c7c7",
+                              transition: "all 0.3s",
                             }}
                           >
-                            <CardMedia
+                            <Box
                               sx={{
-                                width: "calc(100% - (16px*2)) !important",
-                                border: "1px solid black",
-                                aspectRatio: "1/1 !important",
-                                objectFit: "contain !important",
-                                background: "#cbcbcb",
-                                mt: "16px",
-                                boxSizing: "border-box",
+                                display: "flex",
+                                justifyItems: "center",
+                                alignItems: "center",
+                                flexDirection: "column",
                               }}
-                              component="img"
-                              image={product.productImage[0]}
-                            />
-                            <CardContent>
-                              <Typography
-                                className="ellipsis-text"
-                                gutterBottom
-                                variant="h6"
-                                component="div"
-                              >
-                                {product?.productName}
-                              </Typography>
-                              <Typography
-                                variant="body1"
-                                component="div"
-                                sx={{ color: "#818181" }}
-                              >
-                                {product?.category}
-                              </Typography>
-                              <Box
-                                sx={{ display: { xs: "block", md: "flex" } }}
-                                justifyContent={"space-evenly"}
-                                mt={"10px"}
-                              >
+                            >
+                              <CardMedia
+                                sx={{
+                                  width: "calc(100% - (16px*2)) !important",
+                                  border: "1px solid black",
+                                  aspectRatio: "1/1 !important",
+                                  objectFit: "contain !important",
+                                  background: "#cbcbcb",
+                                  mt: "16px",
+                                  boxSizing: "border-box",
+                                }}
+                                component="img"
+                                image={product.productImage[0]}
+                              />
+                              <CardContent>
                                 <Typography
-                                  variant="body2"
-                                  color="text.secondary"
-                                  sx={{ color: "red", fontWeight: "600" }}
+                                  className="ellipsis-text"
+                                  gutterBottom
+                                  variant="h6"
+                                  component="div"
                                 >
-                                  {displayVNDCurrency(product?.sellingPrice)}
+                                  {product?.productName}
                                 </Typography>
                                 <Typography
-                                  sx={{ textDecoration: "line-through" }}
-                                  variant="body2"
-                                  color="text.secondary"
+                                  variant="body1"
+                                  component="div"
+                                  sx={{ color: "#818181" }}
                                 >
-                                  {displayVNDCurrency(product?.price)}
+                                  {product?.category}
                                 </Typography>
-                              </Box>
-                            </CardContent>
-                          </Box>
-                          <Button
-                            variant="outlined"
-                            color="primary"
-                            sx={{
-                              mx: 2,
-                              mb: 2,
-                              width: "calc(100% - (16px*2))",
-                            }}
-                          >
-                            Add To Card
-                          </Button>
-                        </Card>
+                                <Box
+                                  sx={{ display: { xs: "block", md: "flex" } }}
+                                  justifyContent={"space-evenly"}
+                                  mt={"10px"}
+                                >
+                                  <Typography
+                                    variant="body2"
+                                    color="text.secondary"
+                                    sx={{ color: "red", fontWeight: "600" }}
+                                  >
+                                    {displayVNDCurrency(product?.sellingPrice)}
+                                  </Typography>
+                                  <Typography
+                                    sx={{ textDecoration: "line-through" }}
+                                    variant="body2"
+                                    color="text.secondary"
+                                  >
+                                    {displayVNDCurrency(product?.price)}
+                                  </Typography>
+                                </Box>
+                              </CardContent>
+                            </Box>
+                            <Button
+                              variant="outlined"
+                              color="primary"
+                              sx={{
+                                mx: 2,
+                                mb: 2,
+                                width: "calc(100% - (16px*2))",
+                              }}
+                              onClick={(e) => addToCart(e, product?._id)}
+                            >
+                              Add To Card
+                            </Button>
+                          </Card>
+                        </Link>
                       </SwiperSlide>
                     );
                   })}

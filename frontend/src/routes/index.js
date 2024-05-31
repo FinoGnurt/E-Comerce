@@ -8,6 +8,7 @@ import AdminPanel from "../pages/AdminPanel";
 import AllUsers from "../pages/AllUsers";
 import AllProducts from "../pages/AllProducts";
 import { Typography } from "@mui/material";
+import ProductDetails from "../pages/ProductDetails";
 
 const router = createBrowserRouter([
   {
@@ -18,6 +19,7 @@ const router = createBrowserRouter([
       { path: "login", element: <Login /> },
       { path: "forgot-password", element: <ForgotPassword /> },
       { path: "sign-up", element: <SignUp /> },
+      { path: "product/:id", element: <ProductDetails /> },
       {
         path: "admin-panel",
         element: <AdminPanel />,

@@ -123,7 +123,16 @@ const Header2 = () => {
   };
 
   return (
-    <Box sx={{ py: 2.5, boxShadow: "0 0 16px rgba(0, 0, 0, 0.15)" }}>
+    <Box
+      sx={{
+        py: 2.5,
+        boxShadow: "0 0 16px rgba(0, 0, 0, 0.15)",
+        position: "sticky",
+        top: 0,
+        zIndex: 1000,
+        bgcolor: "white",
+      }}
+    >
       <Container sx={{ display: "flex", justifyContent: "space-between" }}>
         <Box display={"flex"} gap={10}>
           <Link to={"/"}>
