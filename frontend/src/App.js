@@ -23,10 +23,10 @@ function App() {
       credentials: "include",
     });
 
-    const dataAPI = await dataResponse.json();
+    const dataApi = await dataResponse.json();
 
-    if (dataAPI.success) {
-      dispatch(setUserDetails(dataAPI.data));
+    if (dataApi.success) {
+      dispatch(setUserDetails(dataApi.data));
     }
   };
 
@@ -42,11 +42,13 @@ function App() {
   };
 
   useEffect(() => {
+    //user Details
     fetchUserDetails();
+    // user Details cart product
     fetchUserAddToCart();
   }, []);
 
-  //ẩn component với các page:.....
+  //hide component with page:.....
   const location = useLocation();
   const excludePaths = [
     "/admin-panel",
@@ -83,10 +85,10 @@ function App() {
               transition: "top 0.3s ease",
             }}
             pauseOnHover={false}
+            autoClose={1000}
           />
         )}
       </Transition>
-
       <Toaster />
 
       <Context.Provider

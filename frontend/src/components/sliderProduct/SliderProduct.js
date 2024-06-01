@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/scrollbar";
@@ -26,11 +26,19 @@ import fetchCategoryWiseProduct from "../../helpers/fetchCategoryWiseProduct";
 import displayVNDCurrency from "../../helpers/displayCurrency";
 import { Link } from "react-router-dom";
 import addToCart from "../../helpers/addToCart";
+import Context from "../../context";
 
 const SliderProduct = ({ category, title, sliderId }) => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const loadingList = new Array(13).fill(null);
+
+  const { fetchUserAddToCart } = useContext(Context);
+
+  const handleAddToCart = async (e, id) => {
+    await addToCart(e, id);
+    fetchUserAddToCart();
+  };
 
   const fetchData = async () => {
     setLoading(true);
@@ -256,7 +264,7 @@ const SliderProduct = ({ category, title, sliderId }) => {
                                 mb: 2,
                                 width: "calc(100% - (16px*2))",
                               }}
-                              onClick={(e) => addToCart(e, product?._id)}
+                              onClick={(e) => handleAddToCart(e, product?._id)}
                             >
                               Add To Card
                             </Button>

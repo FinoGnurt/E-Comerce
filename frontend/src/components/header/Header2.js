@@ -25,14 +25,14 @@ import {
   Typography,
   styled,
 } from "@mui/material";
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useContext, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import SummaryApi from "../../common";
 import toast from "react-hot-toast";
 import { setUserDetails } from "../../store/userSlice";
 import ROLE from "../../common/role";
-import Navbar from "./Navbar";
+import Context from "../../context";
 
 //Card style
 const StyledBadge = styled(Badge)(({ theme }) => ({
@@ -72,8 +72,11 @@ const linkNav = {
 };
 
 const Header2 = () => {
-  //Search
-  const [searchValue, setSearchValue] = useState("");
+  const searchInput = useLocation();
+  const URLSearch = new URLSearchParams(searchInput?.search);
+  const searchQuery = URLSearch.getAll("q");
+  //Search frontend
+  const [searchValue, setSearchValue] = useState(searchQuery);
   const [isFocused, setIsFocused] = useState(false);
 
   const handleFocus = () => {
@@ -91,7 +94,11 @@ const Header2 = () => {
     setIsFocused(false);
   };
 
-  //Account
+  //count cart backend
+  const context = useContext(Context);
+  const navigate = useNavigate();
+
+  //Account backend
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
@@ -115,6 +122,7 @@ const Header2 = () => {
     if (data.success) {
       toast.success(data.message);
       dispatch(setUserDetails(null));
+      navigate("/");
     }
 
     if (data.error) {
@@ -122,6 +130,16 @@ const Header2 = () => {
     }
   };
 
+  const handleSearch = (e) => {
+    const { value } = e.target;
+    setSearchValue(value);
+
+    if (value) {
+      navigate(`/search?q=${value}`);
+    } else {
+      navigate("/search");
+    }
+  };
   return (
     <Box
       sx={{
@@ -211,7 +229,7 @@ const Header2 = () => {
               placeholder="Search…"
               inputProps={{ "aria-label": "search" }}
               value={searchValue}
-              onChange={(e) => setSearchValue(e.target.value)}
+              onChange={handleSearch}
               onFocus={handleFocus}
               onBlur={handleBlur}
               sx={{
@@ -344,11 +362,16 @@ const Header2 = () => {
               </Link>
             )}
 
-            <IconButton aria-label="cart">
-              <StyledBadge badgeContent={4} color="primary">
-                <ShoppingCart />
-              </StyledBadge>
-            </IconButton>
+            <Link to={"/cart"}>
+              <IconButton aria-label="cart">
+                <StyledBadge
+                  badgeContent={context?.cartProductCount}
+                  color="primary"
+                >
+                  <ShoppingCart />
+                </StyledBadge>
+              </IconButton>
+            </Link>
           </Stack>
         </Box>
       </Container>

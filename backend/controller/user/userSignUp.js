@@ -7,8 +7,6 @@ async function userSignUpController(req, res) {
 
     const user = await userModel.findOne({ email });
 
-    console.log("user", user);
-
     if (user) {
       throw new Error("Already user exits.");
     }
@@ -35,7 +33,7 @@ async function userSignUpController(req, res) {
 
     const payload = {
       ...req.body,
-      role: "ADMIN",
+      role: "GENERAL",
       password: hashPassword,
     };
 
@@ -46,7 +44,7 @@ async function userSignUpController(req, res) {
       data: saveUser,
       success: true,
       error: false,
-      message: "user created Successfully!",
+      message: "User created Successfully!",
     });
   } catch (err) {
     res.json({

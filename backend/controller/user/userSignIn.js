@@ -21,8 +21,6 @@ async function userSignInController(req, res) {
 
     const checkPassword = await bcrypt.compare(password, user.password);
 
-    console.log("CheckPass", checkPassword);
-
     if (checkPassword) {
       const tokenData = {
         _id: user._id,
@@ -54,4 +52,5 @@ async function userSignInController(req, res) {
     });
   }
 }
+
 module.exports = userSignInController;
